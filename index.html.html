@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Modul Interaktif: Ikatan Ion</title>
+<style>:root{--bg:#E6F0F3;--grid:#CADDE3;--panel:#fff;--ink:#12303C;--mute:#4F6B77;--line:#B3C9D2;--cat:#C2255C;--ani:#1C7ED6;--ok:#2B8A3E;--okbg:#E3F5E7;--warn:#9C5200;--warnbg:#FFF1DC;--e:#F5B301;--nuc:#12303C;--nt:#fff;--pri:#5B3DF5;--b:#E8590C;--badbg:#FDE8EF;--sh:#12303C;color-scheme:light;--card:var(--panel);--tx:var(--ink);--bad:var(--cat);--a:var(--ani);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E2230;--grid:#173849;--panel:#16303F;--ink:#E4EEF2;--mute:#9DB6C1;--line:#34566A;--cat:#FF7AA5;--ani:#6BB3F5;--ok:#7BE08C;--okbg:#17362A;--warn:#FFB454;--warnbg:#3A2C14;--nuc:#E4EEF2;--nt:#0E2230;--pri:#6D5BFF;--b:#FF9A5C;--badbg:#3A1A28;--sh:#061620;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0E2230;--grid:#173849;--panel:#16303F;--ink:#E4EEF2;--mute:#9DB6C1;--line:#34566A;--cat:#FF7AA5;--ani:#6BB3F5;--ok:#7BE08C;--okbg:#17362A;--warn:#FFB454;--warnbg:#3A2C14;--nuc:#E4EEF2;--nt:#0E2230;--pri:#6D5BFF;--b:#FF9A5C;--badbg:#3A1A28;--sh:#061620;color-scheme:dark}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background-color:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:28px 28px;color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;line-height:1.6}
+.wrap{max-width:980px;margin:0 auto;padding:18px 14px 48px}
+h1,h2,h3,.tile,.formula,.pill{font-family:"Bricolage Grotesque",system-ui,sans-serif}
+h1{font-weight:800;font-size:clamp(1.8rem,5vw,2.7rem);line-height:1.05;margin:0}h2{font-size:1.3rem;margin:0 0 8px}h3{font-size:1.05rem;margin:0 0 6px}
+.lead,.sub{margin:0 0 12px;color:var(--mute)}
+.hero{display:flex;align-items:center;justify-content:space-between;gap:12px;background:linear-gradient(135deg,#5B3DF5,#1C7ED6 62%,#0FB5C9);color:#fff;border:2px solid var(--ink);border-radius:22px;box-shadow:6px 6px 0 var(--sh);padding:18px 22px}
+.hero .sub{margin:8px 0 0;color:#EAF2FF;max-width:46ch}
+.orb{width:92px;height:92px;flex:none}.spin{transform-origin:50px 50px;animation:spin 14s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+@media (max-width:520px){.orb{width:60px;height:60px}}
+.hud{display:flex;align-items:center;gap:10px;margin:16px 0 10px}
+.barbox{flex:1;height:14px;background:var(--panel);border:2px solid var(--ink);border-radius:9px;overflow:hidden}#bar{height:100%;width:14%;background:linear-gradient(90deg,var(--pri),var(--e));transition:width .3s}
+.pill{background:var(--panel);border:2px solid var(--ink);border-radius:20px;padding:3px 12px;font-size:.88rem;font-weight:800;white-space:nowrap}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:2px 2px 8px}
+.tab{flex:0 0 auto;font:700 .9rem "IBM Plex Sans",system-ui,sans-serif;padding:8px 14px;border:2px solid var(--ink);background:var(--panel);color:var(--ink);border-radius:12px;cursor:pointer}
+.tab.on{background:var(--ink);color:var(--panel);box-shadow:3px 3px 0 var(--pri)}.tab.done{border-color:var(--ok);color:var(--ok)}
+button:focus-visible{outline:3px solid var(--ani);outline-offset:2px}
+.say{display:flex;gap:10px;align-items:center;background:var(--panel);border:2px solid var(--ink);border-radius:16px;box-shadow:3px 3px 0 var(--pri);padding:8px 14px;margin-top:6px;font-weight:600}.say:before{content:"🤖";font-size:1.7rem}
+section{background:var(--panel);border:2px solid var(--ink);border-radius:6px 22px 22px 22px;box-shadow:6px 6px 0 var(--sh);padding:20px;margin-top:16px}
+section:not([hidden]){animation:fi .3s}@keyframes fi{from{opacity:0;transform:translateY(8px)}}
+.btn{font:700 .95rem "IBM Plex Sans",system-ui,sans-serif;padding:9px 16px;border-radius:12px;border:2px solid var(--ink);background:var(--pri);color:#fff;box-shadow:0 3px 0 var(--sh);cursor:pointer}
+.btn.alt{background:var(--panel);color:var(--ink)}.btn:active{transform:translateY(2px);box-shadow:none}.btn:disabled{opacity:.4;cursor:not-allowed}
+.nav,.lrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.nav{justify-content:space-between}
+.opts{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0}
+.o{border:2px solid var(--line);background:var(--panel);color:var(--ink);border-radius:12px;padding:8px 12px;font:700 .95rem "IBM Plex Sans",system-ui,sans-serif;cursor:pointer;text-align:left}
+.o.ok{background:var(--okbg);border-color:var(--ok);color:var(--ok)}.o.no{background:var(--badbg);border-color:var(--cat);color:var(--cat)}
+.mc{min-width:84px;min-height:46px;text-align:center}
+.box,.tip,.warn{background:var(--bg);border:2px dashed var(--line);border-left:6px solid var(--pri);padding:10px 14px;border-radius:10px;margin:10px 0}
+.tip{border-left-color:var(--ok);background:var(--okbg)}.warn{border-left-color:var(--warn);background:var(--warnbg)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.card{border:2px solid var(--ink);border-radius:4px 14px 14px 14px;padding:10px 12px;background:var(--panel)}.card b{display:block}
+.row{border-bottom:2px dashed var(--line);padding:10px 0}.row:last-child{border:0}
+.fb{margin:4px 0 0;font-size:.9rem;color:var(--mute)}.res{font:800 1.3rem "Bricolage Grotesque",system-ui,sans-serif;text-align:center;padding:12px}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:.9rem}td,th{border:2px solid var(--line);padding:6px 8px;text-align:left}th{background:var(--bg)}
+select{background:var(--panel);color:var(--ink);border:2px solid var(--ink);border-radius:10px;padding:8px;font-size:1rem}
+svg{display:block;width:100%;height:auto}
+.pop{animation:pop .4s}@keyframes pop{50%{transform:scale(1.15);background:var(--e)}}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start}@media (max-width:760px){.cols{grid-template-columns:1fr}}
+.stage{background:var(--bg);border:2px dashed var(--line);border-radius:12px;padding:6px}
+.tiles{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 12px}
+.tile{position:relative;width:52px;height:52px;border:2px solid var(--line);background:var(--panel);color:var(--ink);border-radius:10px;font-weight:800;font-size:1.1rem;cursor:pointer}
+.tile small{position:absolute;top:2px;left:5px;font:500 .62rem "IBM Plex Sans",sans-serif;color:var(--mute)}
+.tile[aria-pressed=true]{background:var(--ink);color:var(--panel);border-color:var(--ink)}.tile[aria-pressed=true] small{color:var(--panel)}
+dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:8px 0}dt{color:var(--mute)}dd{margin:0;font-weight:600}
+.badge{display:block;padding:10px 12px;border-radius:10px;border:2px solid;font-weight:500;margin-top:8px}
+.badge.ok{background:var(--okbg);border-color:var(--ok);color:var(--ok)}.badge.no{background:var(--warnbg);border-color:var(--warn);color:var(--warn)}
+.cat{color:var(--cat)}.ani{color:var(--ani)}ul.mis{margin:8px 0 0;padding-left:20px;color:var(--mute)}.pick{margin:4px 0 10px}.pick b{display:block;margin-bottom:4px}.formula{font-weight:800;font-size:2rem;margin:4px 0}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.inp{flex:1;min-width:130px;border:2px solid var(--ink);border-radius:10px;padding:8px 10px;background:var(--panel);color:var(--ink);font:600 .95rem "IBM Plex Sans",system-ui,sans-serif}
+textarea{width:100%;border:2px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);padding:10px;font:500 .85rem ui-monospace,monospace}
+[hidden]{display:none!important}
+.stt{margin-left:8px;font-size:.85rem;font-weight:700;color:var(--ok)}
+@media print{body{background:#fff}.tabs,.say,.nav,.lrow,.hud,#rtxt,#rmsg{display:none!important}section,.hero{box-shadow:none}}
+</style></head><body>
+<div class="wrap">
+<div class="hero"><div><h1>⚛️ Ikatan Ion</h1><p class="sub">Modul belajar mandiri + Lab Virtual Kimia. Kumpulkan XP dan taklukkan semua game!</p></div>
+<svg class="orb" viewBox="0 0 100 100" aria-hidden="true"><g class="spin"><ellipse cx="50" cy="50" rx="42" ry="15" fill="none" stroke="#fff" stroke-opacity=".75" stroke-width="1.5"/><ellipse cx="50" cy="50" rx="42" ry="15" fill="none" stroke="#fff" stroke-opacity=".75" stroke-width="1.5" transform="rotate(60 50 50)"/><ellipse cx="50" cy="50" rx="42" ry="15" fill="none" stroke="#fff" stroke-opacity=".75" stroke-width="1.5" transform="rotate(120 50 50)"/><circle cx="92" cy="50" r="4.5" fill="#F5B301"/><circle cx="71" cy="86" r="4.5" fill="#F5B301"/><circle cx="29" cy="86" r="4.5" fill="#F5B301"/></g><circle cx="50" cy="50" r="9" fill="#F5B301"/></svg></div>
+<div class="hud"><div class="barbox"><div id="bar"></div></div><span class="pill" id="xp">⭐ 0/400 XP · 🌱 Pemula</span><button class="pill" id="th" style="cursor:pointer" aria-label="Ganti tema terang atau gelap">🌓</button></div>
+<div class="lrow" style="margin:0 0 8px"><input id="nm" class="inp" placeholder="Nama siswa" maxlength="40" oninput="save()" aria-label="Nama siswa"><input id="kl" class="inp" style="max-width:150px;flex:none" placeholder="Kelas, mis. X-2" maxlength="12" oninput="save()" aria-label="Kelas"></div>
+<div class="tabs" id="tabs"></div>
+<div class="say" id="say"></div>
+
+<section>
+<h2>1 · Ulasan: Kestabilan Atom</h2>
+<p><b>Tujuan belajar:</b> setelah modul ini kamu dapat menjelaskan proses terbentuknya ikatan ion, menentukan ion yang terbentuk, dan menuliskan rumus senyawa ion.</p>
+<div class="box">Atom cenderung stabil jika konfigurasi elektronnya seperti gas mulia: <b>duplet</b> (2 elektron, seperti He) atau <b>oktet</b> (8 elektron valensi). Untuk mencapainya, atom dapat <b>melepas</b> atau <b>menerima</b> elektron.</div>
+<svg id="gm" viewBox="0 0 480 150" role="img" aria-label="Konfigurasi gas mulia"></svg>
+<p class="fb" style="text-align:center">Gas mulia sudah stabil: He duplet, Ne dan Ar oktet.</p>
+<h2>🎮 Game: stabil atau belum?</h2><div id="stb"></div>
+<p><b>Pemanasan:</b> Atom Na punya konfigurasi elektron 2.8.1. Menurutmu, lebih mudah melepas 1 elektron atau menerima 7 elektron agar stabil? Pikirkan dulu, lalu klik.</p>
+<button class="btn alt" onclick="this.nextElementSibling.hidden=false;this.hidden=true;once('w',10)">Lihat jawaban</button>
+<div class="box" hidden>Melepas 1 elektron. Setelah itu konfigurasinya 2.8 (seperti Ne), sehingga stabil. Menerima 7 elektron jauh lebih sulit.</div>
+<div class="nav"><span></span><button class="btn" onclick="go(1)">Lanjut</button></div>
+</section>
+
+<section hidden>
+<h2>2 · Pelajari: Apa itu Ikatan Ion?</h2>
+<p><b>Ikatan ion</b> adalah ikatan yang terbentuk karena gaya tarik-menarik elektrostatik antara ion positif (<b>kation</b>) dan ion negatif (<b>anion</b>). Ion terbentuk karena ada serah-terima elektron.</p>
+<div class="grid">
+<div class="card"><b>Atom logam</b><br>Mudah <b>melepas</b> elektron valensi → menjadi <b>kation</b> (muatan +). Contoh: Na → Na<sup>+</sup></div>
+<div class="card"><b>Atom nonlogam</b><br>Mudah <b>menerima</b> elektron → menjadi <b>anion</b> (muatan −). Contoh: Cl → Cl<sup>−</sup></div>
+</div>
+<div class="box"><b>Aturan praktis:</b> golongan IA–IIIA cenderung melepas elektron sebanyak elektron valensinya. Golongan VIA–VIIA cenderung menerima sebanyak (8 − elektron valensi).</div>
+<h2>Kation vs Anion</h2>
+<div class="tw"><table><tr><th></th><th>Kation (+)</th><th>Anion (−)</th></tr>
+<tr><td>Berasal dari</td><td>Logam</td><td>Nonlogam</td></tr>
+<tr><td>Proses</td><td>Melepas e⁻</td><td>Menerima e⁻</td></tr>
+<tr><td>Ukuran</td><td>Lebih kecil dari atomnya</td><td>Lebih besar dari atomnya</td></tr>
+<tr><td>Contoh</td><td>Na⁺, Mg²⁺, Al³⁺</td><td>Cl⁻, O²⁻, S²⁻</td></tr></table></div>
+<h2 style="margin-top:16px">Kisi kristal NaCl</h2>
+<svg id="crys" viewBox="0 0 300 110" role="img" aria-label="Kisi kristal NaCl"></svg>
+<p class="fb" style="text-align:center">Setiap ion dikelilingi ion berlawanan muatan, jadi ikatannya kuat ke segala arah.</p>
+<h2 style="margin-top:16px">Menulis rumus: metode silang</h2>
+<div class="tip"><b>Al³⁺ + O²⁻</b><br>1) Tulis ion: Al³⁺ dan O²⁻<br>2) Silangkan angka muatan jadi indeks: Al₂O₃<br>3) Sederhanakan jika bisa (Mg²⁺ + O²⁻ → Mg₂O₂ → <b>MgO</b>)<br>Cek: 2×(+3) + 3×(−2) = 0 ✔</div>
+<h2>Sifat senyawa ion dan alasannya</h2>
+<div class="grid">
+<div class="card">🧊 <b>Keras tetapi rapuh</b>Jika lapisan bergeser, ion sejenis berhadapan dan tolak-menolak, sehingga kristal pecah.</div>
+<div class="card">🔥 <b>Titik leleh tinggi</b>Tarikan elektrostatik sangat kuat, perlu banyak energi untuk memutusnya.</div>
+<div class="card">💧 <b>Larut dalam air</b>Molekul air menarik ion-ion keluar dari kisi (umumnya).</div>
+<div class="card">⚡ <b>Hantar listrik</b>Ya saat larutan atau lelehan karena ion bebas bergerak. Padatan tidak, karena ion terkunci.</div>
+</div>
+<h2 style="margin-top:16px">🔬 Lab mini: hantaran listrik</h2>
+<svg id="cond" viewBox="0 0 400 130" role="img" aria-label="Hantaran listrik senyawa ion"></svg>
+<div class="opts"><button class="o" onclick="cond(0)">🧊 Padatan</button><button class="o" onclick="cond(1)">🔥 Lelehan / larutan</button></div><p class="fb" id="condt"></p>
+<div class="nav"><button class="btn alt" onclick="go(0)">Kembali</button><button class="btn" onclick="go(2)">Lanjut</button></div>
+</section>
+
+<section hidden>
+<h2>3 · 🔬 Lab 1: Kestabilan Atom</h2>
+<p class="lead">Tambah atau lepas elektron, lalu amati kapan atom menjadi stabil.</p>
+<div class="cols"><div class="stage"><svg id="s1" viewBox="0 0 300 300" role="img" aria-label="Model atom Bohr"></svg></div>
+<div><h3>Pilih unsur</h3><div class="tiles" id="tiles"></div>
+<div class="lrow"><button class="btn alt" id="minus">− Lepas 1 elektron</button><button class="btn alt" id="plus">+ Tambah 1 elektron</button><button class="btn alt" id="reset1">Kembalikan</button></div>
+<div aria-live="polite"><dl id="info"></dl><span class="badge" id="status"></span></div>
+<ul class="mis"><li>Temukan unsur yang sudah stabil tanpa diubah.</li><li>Ubah Na dan Cl sampai stabil. Muatan apa yang muncul?</li><li>Bandingkan elektron valensi logam dan nonlogam.</li></ul></div></div>
+<div class="nav"><button class="btn alt" onclick="go(1)">Kembali</button><button class="btn" onclick="go(3)">Lanjut ke Lab 2</button></div>
+</section>
+<section hidden>
+<h2>4 · ⚡ Lab 2: Terbentuknya Ikatan Ion</h2>
+<p class="lead">Pilih logam dan nonlogam, lalu pindahkan elektronnya satu per satu.</p>
+<div class="cols"><div class="pick"><b>Pilih logam</b><div class="tiles" id="mtiles"></div></div><div class="pick"><b>Pilih nonlogam</b><div class="tiles" id="ntiles"></div></div></div>
+<div class="stage"><svg id="s2" viewBox="0 0 720 200" role="img" aria-label="Perpindahan elektron antaratom"></svg></div>
+<div class="lrow"><button class="btn" id="mvgo">Pindahkan 1 elektron</button><button class="btn alt" id="auto">Pindahkan semua</button><button class="btn alt" id="vw">Tampilan: Bohr</button><button class="btn alt" id="reset2">Ulangi</button></div>
+<div aria-live="polite"><p id="msg2"></p><div id="result" hidden><div class="formula" id="formula"></div><p id="explain"></p></div></div>
+<div class="nav"><button class="btn alt" onclick="go(2)">Kembali</button><button class="btn" onclick="go(4)">Ke Latihan</button></div>
+</section>
+
+<section hidden>
+<h2>5 · Latihan</h2>
+<p><b>A. Tentukan ion yang terbentuk</b><span class="stt" data-k="lat"></span> jika atom mencapai kestabilan.</p>
+<div id="lat"></div>
+<h2 style="margin-top:18px">B. Susun rumus senyawa ion</h2>
+<p>Pilih kation dan anion. Muatan harus seimbang (total muatan = 0).</p>
+<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+<select id="cat" onchange="bld()"></select> <span>+</span> <select id="an" onchange="bld()"></select>
+</div>
+<div class="box" id="bout"></div>
+<h2 style="margin-top:18px">C. Tantangan cepat: ion atau bukan?<span class="stt" data-k="sort"></span></h2>
+<p>Tentukan apakah senyawa berikut berikatan ion.</p>
+<div id="sort"></div>
+<h2 style="margin-top:18px">D. 🃏 Pasang kartu: simbol ion ↔ nama<span class="stt" data-k="mem"></span></h2>
+<div class="opts" id="mem"></div><p class="fb" id="memt">Klik dua kartu, cari pasangan yang cocok.</p>
+<h2 style="margin-top:18px">E. 🎲 Rakit rumus kilat<span class="stt" data-k="rk"></span></h2>
+<p class="fb" id="rkn"></p><div id="rkq"></div><button class="btn alt" id="rkb" onclick="rk()">🎲 Soal baru</button>
+<div class="tip" id="lall" hidden>🎉 <b>Semua latihan sudah selesai!</b> Kamu boleh lanjut ke Kuis Akhir.</div>
+<div class="nav"><button class="btn alt" onclick="go(3)">Kembali</button><button class="btn" onclick="go(5)">Ke Kuis</button></div>
+</section>
+
+<section hidden>
+<h2>6 · Kuis Akhir (20 soal)</h2>
+<p class="lead">Nilai = jumlah jawaban benar ÷ 20 × 100. Hasilnya masuk ke Rapor, jadi isi nama di bagian atas halaman dulu ya!</p>
+<div id="quiz"></div>
+<div class="res" id="res" hidden></div>
+<div class="nav"><button class="btn alt" onclick="go(4)">Kembali</button><button class="btn alt" onclick="quiz()">Ulangi kuis</button><button class="btn" onclick="go(6)">Ringkasan</button><button class="btn" onclick="go(7)">📜 Rapor</button></div>
+</section>
+
+<section hidden>
+<h2>7 · Ringkasan Kilat</h2>
+<div class="grid">
+<div class="card">1️⃣ <b>Syarat</b>Logam + nonlogam</div>
+<div class="card">2️⃣ <b>Proses</b>Logam melepas e⁻ → kation. Nonlogam menerima e⁻ → anion.</div>
+<div class="card">3️⃣ <b>Muatan ion</b>Gol. IA–IIIA: +(e valensi). Gol. VIA–VIIA: −(8 − e valensi).</div>
+<div class="card">4️⃣ <b>Ikatan</b>Gaya tarik elektrostatik kation–anion dalam kisi kristal.</div>
+<div class="card">5️⃣ <b>Rumus</b>Silangkan muatan jadi indeks, lalu sederhanakan.</div>
+<div class="card">6️⃣ <b>Sifat</b>Titik leleh tinggi, rapuh, hantar listrik saat larutan atau lelehan.</div>
+</div>
+<div class="warn"><b>Kesalahan umum</b>• Ikatan ion bukan penggunaan bersama elektron (itu kovalen).<br>• Yang berubah hanya jumlah elektron, bukan jumlah proton di inti.<br>• Senyawa ion tidak menghantarkan listrik saat padat.</div>
+<p class="res" id="fin"></p>
+<div class="nav"><button class="btn alt" onclick="go(5)">Kembali</button><button class="btn alt" onclick="go(0)">Mulai dari awal</button><button class="btn" onclick="go(7)">📜 Lihat Rapor</button></div>
+</section>
+<section hidden>
+<h2>8 · 📜 Rapor Belajar</h2>
+<div id="rapor"></div>
+<div class="lrow"><button class="btn" onclick="cpy()">📋 Salin hasil</button><button class="btn alt" onclick="dl()">⬇️ Unduh (.csv)</button><button class="btn alt" onclick="wa()">💬 Kirim WhatsApp</button><button class="btn alt" onclick="pr()">🖨️ Cetak / PDF</button><button class="btn alt" id="rst" onclick="rs()">🗑️ Hapus progres</button></div>
+<p class="fb" id="rmsg">Kirim hasil ini ke guru melalui WhatsApp, LMS, atau email.</p>
+<textarea id="rtxt" rows="9" readonly aria-label="Teks rapor"></textarea>
+<div class="nav"><button class="btn alt" onclick="go(6)">Kembali</button><span></span></div>
+</section>
+</div>
+<script>
+const $=s=>document.querySelector(s);
+let cur=0,max=0,st=0;
+const names=['Ulasan','Pelajari','Lab 1','Lab 2','Latihan','Kuis','Ringkasan','Rapor'];
+$('#tabs').innerHTML=names.map((n,i)=>`<button class="tab" onclick="go(${i})">${i+1}. ${n}</button>`).join('');
+function go(i){cur=i;max=Math.max(max,i);document.querySelectorAll('section').forEach((s,k)=>s.hidden=k!==i);document.querySelectorAll('.tab').forEach((t,k)=>{t.classList.toggle('on',k===i);t.classList.toggle('done',k<max&&k!==i)});$('#say').textContent=SAY[i];$('#bar').style.width=((max+1)/names.length*100)+'%';if(i==6){once('r',10);$('#fin').textContent=$('#xp').textContent}if(i==7)renderR();window.scrollTo(0,0)}
+
+function atom(cx,c,col,sym,blue){let s='';c.forEach((n,i)=>{const r=24+i*14;s+=`<circle cx="${cx}" cy="75" r="${r}" fill="none" stroke="var(--line)"/>`;for(let k=0;k<n;k++){const a=2*Math.PI*k/n-Math.PI/2+i*.5;const b=blue&&i==c.length-1&&k==0;s+=`<circle cx="${cx+r*Math.cos(a)}" cy="${75+r*Math.sin(a)}" r="4" fill="${b?'var(--a)':col}"/>`}});return s+`<circle cx="${cx}" cy="75" r="16" fill="var(--line)"/><text x="${cx}" y="80" text-anchor="middle" font-size="14" font-weight="700" fill="var(--tx)">${sym}</text>`}
+
+
+const L=[['Na',1],['Mg',2],['Al',3],['O',6],['Cl',7]],O=['+1','+2','+3','−1','−2'];
+$('#lat').innerHTML=L.map(([e,v],i)=>{const q=v<=3?v:8-v,ans=(v<=3?'+':'−')+q;
+return `<div class="row"><b>${e}</b> <small>(elektron valensi ${v})</small><div class="opts">${O.map(o=>`<button class="o" onclick="chk(this,'${o}','${ans}',${v},'${e}')">${o}</button>`).join('')}</div><p class="fb"></p></div>`}).join('');
+function chk(b,o,a,v,e){const f=b.parentNode.nextElementSibling;
+if(o==a){if(!b.parentNode.dataset.g){b.parentNode.dataset.g=1;xp(10,'lat')}b.className='o ok';f.style.color='var(--ok)';f.textContent=v<=3?`Benar! ${e} melepas ${v} elektron sehingga menjadi kation ${a}.`:`Benar! ${e} menerima ${8-v} elektron agar oktet sehingga menjadi anion ${a}.`}
+else{b.className='o no';f.style.color='var(--bad)';f.textContent=v<=3?'Belum tepat. Elektron valensi sedikit (1–3), jadi atom cenderung melepas elektron. Muatannya positif.':'Belum tepat. Elektron valensi banyak (6–7), jadi atom cenderung menerima elektron sampai 8. Muatannya negatif.'}}
+
+const C=[['Na⁺',1,'natrium'],['Mg²⁺',2,'magnesium'],['Al³⁺',3,'aluminium'],['Ca²⁺',2,'kalsium']],A=[['Cl⁻',1,'klorida','Cl'],['F⁻',1,'fluorida','F'],['O²⁻',2,'oksida','O'],['S²⁻',2,'sulfida','S']];
+const sub=n=>n>1?'₀₁₂₃₄₅₆₇₈₉'[n]:'';
+$('#cat').innerHTML=C.map((c,i)=>`<option value="${i}">${c[0]}</option>`).join('');
+$('#an').innerHTML=A.map((c,i)=>`<option value="${i}">${c[0]}</option>`).join('');
+function bld(){const c=C[$('#cat').value],a=A[$('#an').value];const g=(x,y)=>y?g(y,x%y):x,k=g(c[1],a[1]);const nc=a[1]/k,na=c[1]/k;
+const sym=c[0].replace(/[⁺²³]/g,'');
+$('#bout').innerHTML=`<b>Rumus: ${sym}${sub(nc)}${a[3]}${sub(na)}</b> (${c[2]} ${a[2]})<br>Total muatan: ${nc} × (+${c[1]}) + ${na} × (−${a[1]}) = 0 ✔`}
+bld();
+
+const Q=[
+{t:0,q:'Atom bersifat stabil jika konfigurasi elektronnya seperti…',o:['Logam alkali','Gas mulia','Halogen','Unsur transisi'],a:1,e:'Gas mulia memiliki kulit terluar penuh (duplet atau oktet).'},
+{t:0,q:'Jumlah elektron valensi atom Cl (2.8.7) adalah…',o:['1','7','8','17'],a:1,e:'Elektron valensi adalah elektron di kulit terluar, yaitu 7.'},
+{t:0,q:'Atom He stabil dengan konfigurasi…',o:['Oktet','Duplet','Triplet','Setengah penuh'],a:1,e:'He hanya memiliki kulit pertama yang terisi penuh dengan 2 elektron (duplet).'},
+{t:0,q:'Atom Na (2.8.1) lebih mudah mencapai kestabilan dengan…',o:['Menerima 7 elektron','Melepas 1 elektron','Menerima 1 elektron','Melepas 7 elektron'],a:1,e:'Melepas 1 elektron lebih mudah, hasilnya 2.8 seperti Ne.'},
+{t:0,q:'Atom yang sudah stabil dalam keadaan netral adalah…',o:['Na','Mg','Ar','F'],a:2,e:'Ar berkonfigurasi 2.8.8 sehingga sudah oktet.'},
+{t:1,q:'Ikatan ion umumnya terbentuk antara…',o:['Dua atom nonlogam','Atom logam dan atom nonlogam','Dua atom logam','Dua atom gas mulia'],a:1,e:'Logam melepas elektron (kation), nonlogam menerima elektron (anion).'},
+{t:1,q:'Kation terbentuk ketika atom…',o:['Melepas elektron','Menerima elektron','Menerima proton','Melepas neutron'],a:0,e:'Melepas elektron membuat muatan menjadi positif.'},
+{t:1,q:'Jika atom Cl (2.8.7) menerima 1 elektron, ion yang terbentuk adalah…',o:['Cl⁺','Cl²⁻','Cl⁻','Cl²⁺'],a:2,e:'Menambah 1 elektron menghasilkan Cl⁻ dengan konfigurasi 2.8.8.'},
+{t:1,q:'Atom Mg (golongan IIA) mencapai kestabilan dengan…',o:['Menerima 2 elektron','Melepas 2 elektron','Melepas 6 elektron','Menerima 6 elektron'],a:1,e:'Mg memiliki 2 elektron valensi, melepasnya membentuk Mg²⁺.'},
+{t:1,q:'Atom O (2.6) menjadi stabil dengan membentuk ion…',o:['O⁺','O²⁺','O⁻','O²⁻'],a:3,e:'O membutuhkan 2 elektron untuk oktet, sehingga menjadi O²⁻ (2.8).'},
+{t:1,q:'Ion Na⁺ memiliki konfigurasi elektron yang sama dengan gas mulia…',o:['He','Ne','Ar','Kr'],a:1,e:'Na⁺ berkonfigurasi 2.8, sama seperti Ne.'},
+{t:2,q:'Rumus senyawa dari Mg²⁺ dan Cl⁻ adalah…',o:['MgCl','Mg₂Cl','MgCl₂','Mg₂Cl₂'],a:2,e:'Satu Mg²⁺ (+2) memerlukan dua Cl⁻ (−2).'},
+{t:2,q:'Senyawa Al₂O₃ terbentuk dari ion…',o:['Al⁺ dan O⁻','Al³⁺ dan O²⁻','Al²⁺ dan O³⁻','Al³⁺ dan O⁻'],a:1,e:'2×(+3) + 3×(−2) = 0, muatannya seimbang.'},
+{t:2,q:'Rumus senyawa dari Ca²⁺ dan O²⁻ adalah…',o:['Ca₂O₂','CaO','Ca₂O','CaO₂'],a:1,e:'Muatan +2 dan −2 sudah seimbang dengan perbandingan 1 : 1.'},
+{t:2,q:'Rumus senyawa dari Na⁺ dan S²⁻ adalah…',o:['NaS','Na₂S','NaS₂','Na₂S₂'],a:1,e:'Dibutuhkan 2 Na⁺ (+2) untuk menyeimbangkan 1 S²⁻ (−2).'},
+{t:2,q:'Nama senyawa NaCl adalah…',o:['Natrium klorida','Natrium klorat','Natrium klorin','Natrium oksida'],a:0,e:'Nama anion nonlogam diberi akhiran -ida, yaitu klorida.'},
+{t:3,q:'Ikatan ion terjadi karena…',o:['Pemakaian bersama pasangan elektron','Tarik-menarik ion positif dan ion negatif','Tolak-menolak antarinti','Elektron bebas di antara atom'],a:1,e:'Ion yang muatannya berlawanan saling tarik secara elektrostatik.'},
+{t:3,q:'Pernyataan yang benar tentang senyawa ion adalah…',o:['Titik lelehnya rendah','Lelehannya menghantarkan listrik','Padatannya menghantarkan listrik','Tidak pernah larut dalam air'],a:1,e:'Dalam lelehan, ion bebas bergerak sehingga dapat menghantarkan listrik.'},
+{t:3,q:'Kristal senyawa ion bersifat rapuh karena…',o:['Ion sejenis berhadapan dan tolak-menolak saat lapisan bergeser','Ikatannya sangat lemah','Tidak memiliki muatan','Elektronnya bebas bergerak'],a:0,e:'Pergeseran membuat ion bermuatan sama berdekatan, sehingga kristal pecah.'},
+{t:1,q:'Dibanding atom asalnya, ukuran kation…',o:['Lebih besar','Sama','Lebih kecil','Tidak tentu'],a:2,e:'Melepas elektron mengurangi kulit terluar, sehingga ion mengecil.'}];
+let sc=0,ans=0;
+function quiz(){sc=0;ans=0;$('#res').hidden=true;$('#quiz').innerHTML=Q.map((x,i)=>`<div class="row"><b>${i+1}. ${x.q}</b><div class="opts">${x.o.map((o,j)=>`<button class="o" onclick="pick(this,${i},${j})">${o}</button>`).join('')}</div><p class="fb"></p></div>`).join('')}
+function pick(b,i,j){const p=b.parentNode;if(p.dataset.d)return;p.dataset.d=1;const f=p.nextElementSibling,x=Q[i];ans++;
+if(j==x.a){sc++;xp(20);b.className='o ok';f.style.color='var(--ok)';f.textContent='Benar! '+x.e}
+else{b.className='o no';p.children[x.a].className='o ok';f.style.color='var(--bad)';f.textContent='Belum tepat. '+x.e}
+if(ans==Q.length){const r=$('#res');r.hidden=false;r.textContent=`Skor: ${sc} / ${Q.length} — `+(sc==Q.length?'Luar biasa! 🎉':sc>=3?'Bagus! Ulangi bagian yang masih keliru.':'Yuk, pelajari lagi bagian 2 dan 3, lalu coba kuis lagi.')}}
+let XP=0;const MAXXP=400,XPC={},CAT=[['stb','Game Ulasan: stabil atau belum',50],['lat','Latihan A: menentukan ion',50],['sort','Latihan C: ion atau bukan',60],['mem','Latihan D: pasang kartu',20],['rk','Latihan E: rakit rumus',50],['lab','Lab mini, Lab 1, dan Lab 2',50],['kuis','Kuis akhir',100],['lain','Pemanasan dan Ringkasan',20]];
+const lvl=x=>x>=400?'🏆 Master Ion':x>=250?'⚡ Ahli Ion':x>=100?'🔬 Penjelajah':'🌱 Pemula';
+function xp(n,c='lain'){const m=CAT.find(x=>x[0]==c)[2];XPC[c]=Math.min(m,(XPC[c]||0)+n);XP=Object.values(XPC).reduce((a,b)=>a+b,0);const e=$('#xp');e.textContent=`⭐ ${XP}/${MAXXP} XP · ${lvl(XP)}`;e.classList.remove('pop');void e.offsetWidth;e.classList.add('pop');lstat();save()}
+function lstat(){const T={lat:50,sort:60,mem:20,rk:50};let all=true;document.querySelectorAll('.stt').forEach(s=>{const ok=(XPC[s.dataset.k]||0)>=T[s.dataset.k];if(!ok)all=false;s.textContent=ok?'✅ Selesai':''});$('#lall').hidden=!all}
+function rkd(){const n=Math.min(5,Math.floor((XPC.rk||0)/10));$('#rkn').textContent=n>=5?'✅ Selesai! 5 dari 5 soal sudah benar. Tidak perlu mengulang lagi.':'Soal benar: '+n+' dari 5. Jawab 5 soal dengan benar untuk menyelesaikan bagian ini.';$('#rkb').hidden=n>=5}
+let cs='';for(let r=0;r<2;r++)for(let c=0;c<7;c++){const na=(r+c)%2==0;cs+=`<circle cx="${30+c*40}" cy="${28+r*54}" r="${na?9:15}" fill="${na?'var(--a)':'var(--b)'}" opacity=".85"/><text x="${30+c*40}" y="${32+r*54}" text-anchor="middle" font-size="${na?9:11}" fill="#fff">${na?'Na⁺':'Cl⁻'}</text>`}
+$('#crys').innerHTML=cs;
+const S=[['NaCl',1,'Na (logam) + Cl (nonlogam).'],['H₂O',0,'H dan O sama-sama nonlogam, ikatannya kovalen.'],['MgO',1,'Mg (logam) + O (nonlogam).'],['CO₂',0,'C dan O nonlogam, ikatannya kovalen.'],['KBr',1,'K (logam) + Br (nonlogam).'],['CH₄',0,'C dan H nonlogam, ikatannya kovalen.']];
+$('#sort').innerHTML=S.map(([f,i,r])=>`<div class="row"><b>${f}</b><div class="opts"><button class="o" onclick="srt(this,${i},1,'${r}')">Ikatan ion</button><button class="o" onclick="srt(this,${i},0,'${r}')">Bukan</button></div><p class="fb"></p></div>`).join('');
+function srt(b,a,g,r){const p=b.parentNode,f=p.nextElementSibling;if(p.dataset.d)return;if(a==g){p.dataset.d=1;b.className='o ok';f.style.color='var(--ok)';f.textContent='Tepat! '+r;xp(10,'sort')}else{b.className='o no';f.style.color='var(--bad)';f.textContent='Coba lagi. Ingat: ikatan ion terjadi antara logam dan nonlogam.'}}
+const SAY=['Halo! Aku Ion-bot. Ingat dulu: atom maunya stabil seperti gas mulia!','Logam melepas, nonlogam menerima. Coba Lab mini di bawah ya!','Lab 1: ubah jumlah elektron dan temukan atom yang stabil!','Lab 2: pindahkan elektron dan lihat ikatan ion terbentuk!','Waktunya latihan! Ada 5 game untuk mengumpulkan XP.','Kuis akhir! Tenang, tiap jawaban ada penjelasannya.','Mantap! Baca ringkasan ini sebelum ujian.','Ini rapormu! Salin atau unduh, lalu kirim ke gurumu.'];
+const dn={};function once(k,n){if(!dn[k]){dn[k]=1;xp(n)}}
+function gm(b,ok,r){const p=b.parentNode,f=p.nextElementSibling;if(p.dataset.d)return;if(ok){p.dataset.d=1;b.className='o ok';f.style.color='var(--ok)';f.textContent='Tepat! '+r;xp(10)}else{b.className='o no';f.style.color='var(--bad)';f.textContent='Belum tepat, coba pilihan lain!'}}
+$('#gm').innerHTML=atom(80,[2],'var(--a)','He')+atom(240,[2,8],'var(--a)','Ne')+atom(400,[2,8,8],'var(--a)','Ar')+[['He',80,'duplet'],['Ne',240,'oktet'],['Ar',400,'oktet']].map(([n,x,t])=>`<text x="${x}" y="146" text-anchor="middle" font-size="12" fill="var(--tx)">${n}: ${t}</text>`).join('');
+$('#stb').innerHTML=[['Na (2.8.1)',0,'Elektron valensi 1, belum oktet.'],['Ne (2.8)',1,'Oktet, seperti gas mulia.'],['Cl (2.8.7)',0,'Kurang 1 elektron untuk oktet.'],['Mg²⁺ (2.8)',1,'Setelah melepas 2 elektron, konfigurasinya 2.8.'],['Ar (2.8.8)',1,'Oktet, stabil.']].map(([f,k,r])=>`<div class="row"><b>${f}</b><div class="opts"><button class="o" onclick="gm(this,${k==1},'${r}')">✅ Stabil</button><button class="o" onclick="gm(this,${k==0},'${r}')">⚠️ Belum stabil</button></div><p class="fb"></p></div>`).join('');
+function cond(m){let s='<rect x="10" y="20" width="250" height="95" rx="10" fill="none" stroke="var(--line)" stroke-width="2"/>';for(let r=0;r<3;r++)for(let c=0;c<6;c++){const na=(r+c)%2==0,j=m?((r*7+c*13)%17-8):0,k=m?((r*11+c*5)%15-7):0;s+=`<circle cx="${40+c*40+j}" cy="${42+r*30+k}" r="${na?7:11}" fill="${na?'var(--a)':'var(--b)'}"/>`}s+=`<line x1="260" y1="65" x2="320" y2="65" stroke="var(--tx)" stroke-width="2"/><circle cx="350" cy="65" r="${m?32:22}" fill="${m?'#facc15':'var(--line)'}"/><text x="350" y="72" text-anchor="middle" font-size="20">${m?'💡':'🔌'}</text>`;$('#cond').innerHTML=s;$('#condt').textContent=m?'Ion bebas bergerak, membawa muatan, sehingga lampu menyala!':'Ion terkunci di kisi dan tidak bisa bergerak, sehingga lampu padam.';if(m)once('c',10)}
+cond(0);
+
+const MP=[['Na⁺','natrium'],['Cl⁻','klorida'],['Mg²⁺','magnesium'],['O²⁻','oksida']];let mf=null,mm=0;
+function mem(){const c=[];MP.forEach((p,i)=>{c.push([p[0],i]);c.push([p[1],i])});c.sort(()=>Math.random()-.5);const fin=(XPC.mem||0)>=20;mf=null;mm=fin?4:0;$('#mem').innerHTML=c.map(([t,i])=>`<button class="o mc${fin?' ok':''}" data-i="${i}" data-t="${t}" onclick="flip(this)">${fin?t:'❓'}</button>`).join('');if(fin)$('#memt').textContent='✅ Selesai! Semua pasangan sudah cocok.'}
+function flip(b){if(b.classList.contains('ok')||b===mf)return;b.textContent=b.dataset.t;if(!mf){mf=b;return}const a=mf;mf=null;if(a.dataset.i==b.dataset.i){a.className=b.className='o mc ok';mm++;once('m'+a.dataset.i,5);if(mm==4)$('#memt').textContent='✅ Selesai! Semua pasangan sudah cocok. Tidak perlu diulang lagi.'}else setTimeout(()=>{a.textContent=b.textContent='❓'},700)}
+mem();
+function rk(){if((XPC.rk||0)>=50){$('#rkq').innerHTML='';rkd();return}const c=C[Math.random()*4|0],a=A[Math.random()*4|0];const g=(x,y)=>y?g(y,x%y):x,k=g(c[1],a[1]),nc=a[1]/k,na=c[1]/k,s=c[0].replace(/[⁺²³]/g,''),f=(x,y)=>s+sub(x)+a[3]+sub(y);const o=[f(nc,na),f(na,nc),f(1,1),f(c[1],a[1])],u=[...new Set(o)].sort(()=>Math.random()-.5);$('#rkq').innerHTML=`<div class="row">Rumus dari <b>${c[0]}</b> + <b>${a[0]}</b> ?<div class="opts" data-rk="1">${u.map(x=>`<button class="o" onclick="gm(this,${x==o[0]},'Muatan: ${nc}×(+${c[1]}) + ${na}×(−${a[1]}) = 0');rkd()">${x}</button>`).join('')}</div><p class="fb"></p></div>`;rkd()}
+rk();
+const EL={He:2,Li:3,N:7,O:8,F:9,Ne:10,Na:11,Mg:12,Al:13,S:16,Cl:17,Ar:18,K:19,Ca:20};
+const SYM={};for(const k in EL)SYM[EL[k]]=k;
+const NOBLE={2:'He',10:'Ne',18:'Ar'};
+const L$=id=>document.getElementById(id);
+const shells=n=>{const o=[];let r=n;for(const c of [2,8,8,2]){const t=Math.min(c,r);if(t>0)o.push(t);r-=t}return o};
+const SUP={1:'',2:'²',3:'³',4:'⁴'};
+const chg=c=>c===0?'':(SUP[Math.abs(c)]||'')+(c>0?'⁺':'⁻');
+const SUB=n=>n>1?String.fromCharCode(8320+n):'';
+const val=Z=>shells(Z).slice(-1)[0];
+const gcd=(a,b)=>b?gcd(b,a%b):a;
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function atomG(Z,n,cx,cy,s){
+  let g='';
+  shells(n).forEach((c,i)=>{
+    const r=(16+14*i)*s;
+    g+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--line)" stroke-width="${Math.max(1,s*.7)}" stroke-dasharray="${s>1?'4 4':'2 2'}"/>`;
+    for(let j=0;j<c;j++){
+      const a=-Math.PI/2+i*.6+2*Math.PI*j/c;
+      g+=`<circle cx="${(cx+r*Math.cos(a)).toFixed(1)}" cy="${(cy+r*Math.sin(a)).toFixed(1)}" r="${Math.max(2.6,s*2.6)}" fill="var(--e)" stroke="var(--ink)" stroke-width=".8"/>`;
+    }
+  });
+  g+=`<circle cx="${cx}" cy="${cy}" r="${12*s}" fill="var(--nuc)"/>`;
+  if(s>1)g+=`<text x="${cx}" y="${cy-1}" text-anchor="middle" font-family="Bricolage Grotesque,system-ui,sans-serif" font-weight="800" font-size="${9*s}" fill="var(--nt)">${SYM[Z]}</text><text x="${cx}" y="${cy+9*s*.9}" text-anchor="middle" font-size="${5.5*s}" fill="var(--nt)">+${Z}</text>`;
+  return g;
+}
+
+/* ---------- Tab 1 ---------- */
+let sel='Na',d=0;
+Object.keys(EL).forEach(k=>{
+  const b=document.createElement('button');b.className='tile';b.dataset.k=k;b.innerHTML=`<small>${EL[k]}</small>${k}`;
+  b.onclick=()=>{sel=k;d=0;render1()};L$('tiles').appendChild(b);
+});
+function render1(){
+  const Z=EL[sel],n=Z+d,ch=Z-n,sh=shells(n);
+  document.querySelectorAll('#tiles .tile').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===sel));
+  L$('s1').innerHTML=atomG(Z,n,150,150,2.05)+`<text x="150" y="292" text-anchor="middle" font-family="Bricolage Grotesque,system-ui,sans-serif" font-weight="800" font-size="20" fill="${ch>0?'var(--cat)':ch<0?'var(--ani)':'var(--ink)'}">${sel}${chg(ch)}</text>`;
+  const stable=[2,10,18].includes(n);
+  L$('info').innerHTML=`<dt>Proton</dt><dd>${Z}</dd><dt>Elektron</dt><dd>${n}</dd><dt>Muatan</dt><dd>${ch===0?'netral (0)':(ch>0?'+':'−')+Math.abs(ch)}</dd><dt>Konfigurasi</dt><dd>${sh.join(', ')||'—'}</dd><dt>Elektron valensi</dt><dd>${sh.slice(-1)[0]||0}</dd>`;
+  const st=L$('status');
+  if(stable){st.className='badge ok';st.textContent=`Stabil. Kulit terluar penuh, konfigurasinya sama seperti gas mulia ${NOBLE[n]}${n>2?' (oktet)':' (duplet)'}.`}
+  else{
+    const t=[2,10,18].reduce((p,c)=>Math.abs(c-n)<Math.abs(p-n)?c:p);const df=t-n;
+    st.className='badge no';st.textContent=`Belum stabil. Kecenderungan: ${df<0?'melepas':'menerima'} ${Math.abs(df)} elektron agar berkonfigurasi seperti ${NOBLE[t]}.`;
+  }
+  L$('minus').disabled=n<=0;L$('plus').disabled=n>=20;
+}
+L$('minus').onclick=()=>{d--;render1()};
+L$('plus').onclick=()=>{d++;render1()};
+L$('reset1').onclick=()=>{d=0;render1()};
+
+/* ---------- Tab 2 ---------- */
+const MET=['Li','Na','K','Mg','Ca','Al'],NON=['N','O','F','S','Cl'];
+const NM={Li:'Litium',Na:'Natrium',K:'Kalium',Mg:'Magnesium',Ca:'Kalsium',Al:'Aluminium'};
+const NN={N:'nitrida',O:'oksida',F:'fluorida',S:'sulfida',Cl:'klorida'};
+let met='Mg',non='Cl',mN=[],nN=[],m=0,k=0,T=0,moved=0,busy=false,mx=[],nx=[],lew=false;
+function tiles(box,list,get,set){
+  list.forEach(s=>{const b=document.createElement('button');b.className='tile';b.dataset.k=s;b.innerHTML=`<small>${EL[s]}</small>${s}`;b.onclick=()=>{set(s);setup2()};L$(box).appendChild(b)});
+}
+tiles('mtiles',MET,()=>met,s=>met=s);tiles('ntiles',NON,()=>non,s=>non=s);
+function setup2(){
+  const Zm=EL[met],Zn=EL[non];m=val(Zm);k=8-val(Zn);const g=gcd(m,k);
+  const a=k/g,b=m/g;mN=Array(a).fill(Zm);nN=Array(b).fill(Zn);T=a*m;moved=0;
+  mx=mN.map((_,i)=>300-(a-1-i)*92);nx=nN.map((_,j)=>420+j*92);
+  render2();
+}
+const outer=(n)=>(16+14*(shells(n).length-1))*.62;
+function lewisG(sym,n,x,c){
+  const v=(sym===met&&c===m)?0:(shells(n).slice(-1)[0]||0),col=c>0?'var(--cat)':c<0?'var(--ani)':'var(--ink)';
+  const P=[[-7,-26],[26,-7],[7,26],[-26,7],[7,-26],[26,7],[-7,26],[-26,-7]];
+  let s=`<text x="${x}" y="93" text-anchor="middle" dominant-baseline="middle" font-family="Bricolage Grotesque,system-ui,sans-serif" font-weight="800" font-size="30" fill="var(--ink)">${sym}</text>`;
+  for(let i=0;i<v;i++)s+=`<circle cx="${x+P[i][0]}" cy="${92+P[i][1]}" r="3.6" fill="var(--e)" stroke="var(--ink)" stroke-width=".8"/>`;
+  if(c!==0)s+=`<path d="M${x-34} 58h-8v68h8M${x+34} 58h8v68h-8" fill="none" stroke="var(--ink)" stroke-width="2"/><text x="${x+46}" y="56" font-size="15" font-weight="800" fill="${col}">${chg(c)}</text>`;
+  return s;
+}
+function lab(sym,Z,n,x){
+  const c=Z-n;
+  return (lew?lewisG(sym,n,x,c):atomG(Z,n,x,92,.62))+`<text x="${x}" y="158" text-anchor="middle" font-family="Bricolage Grotesque,system-ui,sans-serif" font-weight="800" font-size="19" fill="${c>0?'var(--cat)':c<0?'var(--ani)':'var(--ink)'}">${sym}${chg(c)}</text><text x="${x}" y="178" text-anchor="middle" font-size="12" fill="var(--mute)">${shells(n).join(', ')||'—'}</text>`;
+}
+function render2(){
+  document.querySelectorAll('#mtiles .tile').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===met));
+  document.querySelectorAll('#ntiles .tile').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===non));
+  let s='';
+  mN.forEach((n,i)=>s+=lab(met,EL[met],n,mx[i]));
+  nN.forEach((n,j)=>s+=lab(non,EL[non],n,nx[j]));
+  L$('s2').innerHTML=s;
+  const done=moved>=T;
+  L$('mvgo').disabled=busy||done;L$('auto').disabled=busy||done;
+  L$('result').hidden=!done;
+  if(!done){
+    L$('msg2').innerHTML=moved===0?`${met} memiliki ${m} elektron valensi dan ${non} memiliki ${8-k}. Klik tombol untuk memindahkan elektron dari ${met} ke ${non}.`:`Elektron berpindah: ${moved} dari ${T}.`;
+  }else{
+    const Zm=EL[met],Zn=EL[non],a=mN.length,b=nN.length;
+    L$('msg2').textContent=`Semua elektron sudah berpindah (${T} elektron).`;
+    L$('formula').innerHTML=`${met}${SUB(a)}${non}${SUB(b)} <span style="font-size:1rem;font-weight:600;color:var(--mute)">${NM[met]} ${NN[non]}</span>`;
+    L$('explain').innerHTML=`<span class="cat"><b>${met}${chg(m)}</b></span>: melepas ${m} e⁻, konfigurasi ${shells(Zm-m).join(', ')} seperti ${NOBLE[Zm-m]}.<br><span class="ani"><b>${non}${chg(-k)}</b></span>: menerima ${k} e⁻, konfigurasi ${shells(Zn+k).join(', ')} seperti ${NOBLE[Zn+k]}.<br>Ion positif dan ion negatif saling tarik-menarik karena muatannya berlawanan. Gaya tarik elektrostatik inilah yang disebut <b>ikatan ion</b>. Perbandingan ${met} : ${non} = ${a} : ${b} membuat muatan total senyawa nol.`;
+  }
+}
+function transfer(){
+  return new Promise(res=>{
+    if(busy||moved>=T)return res();
+    const i=mN.findIndex(n=>n>EL[met]-m),j=nN.findIndex(n=>n<EL[non]+k);
+    const x0=mx[i]+outer(mN[i]),x1=nx[j]-outer(nN[j]);
+    busy=true;render2();
+    const dot=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    dot.setAttribute('r',4.5);dot.setAttribute('fill','var(--e)');dot.setAttribute('stroke','var(--ink)');
+    L$('s2').appendChild(dot);
+    const dur=reduce?0:650,t0=performance.now();
+    (function step(t){
+      const p=dur?Math.min(1,(t-t0)/dur):1;
+      dot.setAttribute('cx',x0+(x1-x0)*p);dot.setAttribute('cy',92-Math.sin(p*Math.PI)*30);
+      if(p<1)requestAnimationFrame(step);
+      else{mN[i]--;nN[j]++;moved++;busy=false;render2();res()}
+    })(t0);
+  });
+}
+L$('mvgo').onclick=()=>transfer();
+L$('auto').onclick=async()=>{while(moved<T){await transfer();await new Promise(r=>setTimeout(r,reduce?0:150))}};
+L$('reset2').onclick=()=>{if(!busy)setup2()};
+L$('vw').onclick=()=>{lew=!lew;L$('vw').textContent='Tampilan: '+(lew?'Lewis':'Bohr');render2()};
+const _r1=render1;render1=function(){_r1();const n=EL[sel]+d;if(d!==0&&[2,10,18].includes(n))once('l1',20)};
+const _r2=render2;render2=function(){_r2();if(T>0&&moved>=T)once('l2',20)};
+render1();setup2();
+
+const catOf=k=>/^q/.test(k)?'kuis':/^(l|c)/.test(k)?'lab':/^m/.test(k)?'mem':'lain';
+function once(k,n){if(!dn[k]){dn[k]=1;xp(n,catOf(k))}}
+function gm(b,ok,r){const p=b.parentNode,f=p.nextElementSibling;if(p.dataset.d)return;if(ok){p.dataset.d=1;b.className='o ok';f.style.color='var(--ok)';f.textContent='Tepat! '+r;xp(10,p.dataset.rk?'rk':'stb')}else{b.className='o no';f.style.color='var(--bad)';f.textContent='Belum tepat, coba pilihan lain!'}}
+let R=[],NILAI=null,ATT=0,BEST=0;
+const TOP=['Kestabilan atom','Ion dan muatan','Rumus senyawa','Sifat dan ikatan'],pred=n=>n>=90?'A':n>=80?'B':n>=75?'C':'D';
+function quiz(){sc=0;ans=0;R=[];$('#res').hidden=true;$('#quiz').innerHTML=Q.map((x,i)=>`<div class="row"><b>${i+1}. ${x.q}</b><div class="opts">${x.o.map((o,j)=>[o,j]).sort(()=>Math.random()-.5).map(([o,j])=>`<button class="o" data-j="${j}" onclick="pick(this,${i},${j})">${o}</button>`).join('')}</div><p class="fb"></p></div>`).join('')}
+function pick(b,i,j){const p=b.parentNode;if(p.dataset.d)return;p.dataset.d=1;const f=p.nextElementSibling,x=Q[i];ans++;R[i]=j==x.a?1:0;
+if(j==x.a){sc++;once('q'+i,5);b.className='o ok';f.style.color='var(--ok)';f.textContent='Benar! '+x.e}
+else{b.className='o no';p.querySelector('[data-j="'+x.a+'"]').className='o ok';f.style.color='var(--bad)';f.textContent='Belum tepat. '+x.e}
+if(ans==Q.length){NILAI=Math.round(sc/Q.length*100);ATT++;BEST=Math.max(BEST,NILAI);save();const r=$('#res');r.hidden=false;r.textContent=`Nilai: ${NILAI} (${pred(NILAI)}) · Benar ${sc} dari ${Q.length} · `+(NILAI>=75?'Tuntas 🎉':'Perlu remedial, yuk ulangi materinya')}}
+function rep(){const nm=$('#nm').value.trim()||'(nama belum diisi)',kl=$('#kl').value.trim(),fin=NILAI!==null;
+const tp=TOP.map((n,t)=>{let b=0,c=0;Q.forEach((x,i)=>{if(x.t==t){c++;if(R[i]===1)b++}});return[n,b,c]});
+const weak=tp.filter(([,b,c])=>b/c<.75).map(x=>x[0]);
+return{nm,kl,fin,tp,pct:Math.round(XP/MAXXP*100),nilai:fin?NILAI:'-',pr:fin?pred(NILAI):'-',sts:!fin?'Kuis belum dikerjakan':NILAI>=75?'Tuntas':'Perlu remedial',
+cat:!fin?'Kerjakan kuis akhir terlebih dahulu.':weak.length?'Perlu mengulang: '+weak.join(', ')+'.':'Semua topik sudah dikuasai dengan baik.'}}
+function rtxt(r){return `RAPOR BELAJAR: IKATAN ION\nNama: ${r.nm}${r.kl?' ('+r.kl+')':''}\nTanggal: ${new Date().toLocaleDateString('id-ID')}\nNilai kuis: ${r.nilai}/100 (predikat ${r.pr}) - ${r.sts}\nXP: ${XP}/${MAXXP} (${r.pct}%) - ${lvl(XP)}\nPenguasaan topik:\n`+r.tp.map(([n,b,c])=>`- ${n}: ${b}/${c}`).join('\n')+`\nCatatan: ${r.cat}`}
+function renderR(){const r=rep();
+$('#rapor').innerHTML=`<p><b>${r.nm}</b>${r.kl?' · '+r.kl:''}</p><div class="grid"><div class="card"><b>Nilai Kuis</b><span class="formula">${r.nilai}<small style="font-size:1rem">/100</small></span>Predikat ${r.pr} · ${r.sts}${ATT>1?'<br><small>Percobaan ke-'+ATT+', terbaik '+BEST+'</small>':''}</div><div class="card"><b>Total XP</b><span class="formula">${XP}<small style="font-size:1rem">/${MAXXP}</small></span>${lvl(XP)} · ${r.pct}%</div></div>`
++(XP>=MAXXP?'<div class="tip">🏆 Selamat! XP maksimal tercapai: semua aktivitas sudah dituntaskan.</div>':'')
++`<h3 style="margin-top:14px">Rincian XP</h3><div class="tw"><table>${CAT.map(([k,l,m])=>`<tr><td>${l}</td><td>${XPC[k]||0}/${m}</td></tr>`).join('')}</table></div><h3 style="margin-top:14px">Penguasaan topik (kuis)</h3><div class="tw"><table>${r.tp.map(([n,b,c])=>`<tr><td>${n}</td><td>${b}/${c}</td></tr>`).join('')}</table></div><div class="${r.fin&&r.cat[0]=='S'?'tip':'warn'}"><b>Catatan:</b> ${r.cat}</div>`;
+$('#rtxt').value=rtxt(r)}
+async function cpy(){const t=$('#rtxt').value;try{await navigator.clipboard.writeText(t);$('#rmsg').textContent='Hasil disalin. Tempel di WhatsApp atau LMS gurumu.'}catch(e){$('#rtxt').select();$('#rmsg').textContent='Teks sudah dipilih, salin dengan Ctrl+C atau tahan lama lalu pilih Salin.'}}
+async function dl(){const r=rep(),q=v=>'"'+String(v).replace(/"/g,'""')+'"';
+const csv=['Nama,Kelas,Nilai Kuis,Predikat,Status,XP,XP Maks,Persen XP,'+TOP.join(',')+',Tanggal',[r.nm,r.kl,r.nilai,r.pr,r.sts,XP,MAXXP,r.pct+'%',...r.tp.map(([,b,c])=>b+'/'+c),new Date().toLocaleDateString('id-ID')].map(q).join(',')].join('\n');
+const fn='rapor-ikatan-ion-'+r.nm.replace(/\W+/g,'-')+'.csv';
+try{const d=window.claude&&await claude.use('downloads');if(!d)throw 0;await d.save({filename:fn,data:csv});$('#rmsg').textContent='File rapor siap, kirim ke gurumu.';return}catch(e){}
+try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv'}));a.download=fn;document.body.appendChild(a);a.click();a.remove();$('#rmsg').textContent='File rapor diunduh, kirim ke gurumu.'}catch(e){$('#rmsg').textContent='Unduh belum tersedia di sini. Gunakan tombol Salin hasil.'}}
+/* ---------- Simpan progres, tema, rapor ---------- */
+const SK='ikatan-ion-v1';
+function save(){try{localStorage.setItem(SK,JSON.stringify({nm:$('#nm').value,kl:$('#kl').value,XPC,dn,NILAI,BEST,ATT,max,R}))}catch(e){}}
+function load(){try{const s=JSON.parse(localStorage.getItem(SK)||'null');if(!s)return;$('#nm').value=s.nm||'';$('#kl').value=s.kl||'';Object.assign(XPC,s.XPC||{});Object.assign(dn,s.dn||{});NILAI=s.NILAI==null?null:s.NILAI;BEST=s.BEST||0;ATT=s.ATT||0;max=s.max||0;R=s.R||[];XP=Object.values(XPC).reduce((a,b)=>a+b,0);$('#xp').textContent=`⭐ ${XP}/${MAXXP} XP · ${lvl(XP)}`}catch(e){}}
+L$('th').onclick=()=>{const de=document.documentElement,dk=matchMedia('(prefers-color-scheme:dark)').matches,t=de.dataset.theme||(dk?'dark':'light');de.dataset.theme=t==='dark'?'light':'dark'};
+function wa(){try{window.open('https://wa.me/?text='+encodeURIComponent($('#rtxt').value),'_blank','noopener')}catch(e){$('#rmsg').textContent='Gunakan tombol Salin hasil, lalu tempel di WhatsApp.'}}
+function pr(){try{window.print()}catch(e){$('#rmsg').textContent='Cetak belum tersedia di sini. Gunakan tombol Salin hasil.'}}
+let rsc=0;function rs(){const b=$('#rst');if(!rsc){rsc=1;b.textContent='Yakin? Klik sekali lagi';setTimeout(()=>{rsc=0;b.textContent='🗑️ Hapus progres'},4000);return}try{localStorage.removeItem(SK)}catch(e){}location.reload()}
+load();mem();rk();lstat();
+quiz();go(0);
+</script>
+</body></html>
